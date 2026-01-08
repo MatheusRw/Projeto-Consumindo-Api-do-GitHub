@@ -1,0 +1,11 @@
+python -m venv venv
+PS D:\Projeto Consumindo Api> .\venv\Scripts\Activate.ps1
+
+comandos do git 
+
+
+-- para adicionar o repositorio remoto 
+git remote add origin https://github.com/MatheusRw/Projeto-Consumindo-Api-do-GitHub.git
+
+-- para renomear a branch master para main
+git branch -M main
