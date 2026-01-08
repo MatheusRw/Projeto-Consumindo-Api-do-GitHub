@@ -1,25 +1,52 @@
-import json
-from config.settings import TOKEN_FILE
+import requests
+import time
+from config.settings import LOGIN_URL, REFRESH_URL
 
 class AuthService:
-    def __init__(self):
-        self.token = self._load_token()
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
 
-    def _load_token(self):
-        with open(TOKEN_FILE, "r") as f:
-            data = json.load(f)
-            return data["access_token"]
+        self.access_token = None
+        self.refresh_token = None
+        self.expires_at = 0
+
+    def login(self):
+        response = requests.post(
+            LOGIN_URL,
+            json={
+                "username": self.username,
+                "password": self.password
+            },
+            timeout=10
+        )
+        response.raise_for_status()
+
+        data = response.json()
+        self.access_token = data["access_token"]
+        self.refresh_token = data.get("refresh_token")
+        self.expires_at = time.time() + data["expires_in"]
+
+    def refresh(self):
+        response = requests.post(
+            REFRESH_URL,
+            json={"refresh_token": self.refresh_token},
+            timeout=10
+        )
+        response.raise_for_status()
+
+        data = response.json()
+        self.access_token = data["access_token"]
+        self.expires_at = time.time() + data["expires_in"]
 
     def get_headers(self):
-        return {
-            "Authorization": f"Bearer {self.token}",
-            "Accept": "application/vnd.github+json"
-        }
+        if not self.access_token or time.time() >= self.expires_at:
+            if self.refresh_token:
+                self.refresh()
+            else:
+                self.login()
 
-    def refresh_token(self):
-        """
-        GitHub tokens não expiram automaticamente.
-        Aqui é um exemplo REAL de onde você renovaria o token
-        caso a API fosse OAuth.
-        """
-        self.token = self._load_token()
+        return {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json"
+        }
