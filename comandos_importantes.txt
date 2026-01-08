@@ -9,3 +9,7 @@ git remote add origin https://github.com/MatheusRw/Projeto-Consumindo-Api-do-Git
 
 -- para renomear a branch master para main
 git branch -M main
+
+
+-- git pull para conseguir usar o repo local
+git pull origin main --allow-unrelated-histories
