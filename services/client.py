@@ -1,6 +1,7 @@
 import requests
 from services.auth import AuthService
-from config.settings import REPOS_ENDPOINT, PER_PAGE
+from config import settings
+
 
 class GitHubClient:
     def __init__(self):
@@ -12,22 +13,18 @@ class GitHubClient:
 
         while True:
             response = requests.get(
-                REPOS_ENDPOINT,
+                settings.REPOS_ENDPOINT,
                 headers=self.auth.get_headers(),
                 params={
-                    "per_page": PER_PAGE,
+                    "per_page": settings.PER_PAGE,
                     "page": page
                 },
                 timeout=10
             )
 
-            if response.status_code == 401:
-                self.auth.refresh_token()
-                continue
-
             response.raise_for_status()
-            data = response.json()
 
+            data = response.json()
             if not data:
                 break
 
