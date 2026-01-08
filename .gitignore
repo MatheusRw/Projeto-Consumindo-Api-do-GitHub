@@ -2,3 +2,4 @@
 /config/token.json
 /config/*.json
 .env
+/data/*.json
