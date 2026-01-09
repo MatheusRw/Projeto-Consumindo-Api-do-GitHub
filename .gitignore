@@ -1,5 +1,17 @@
-/venv
+# Ambiente virtual
+/venv/
+
+# Configurações sensíveis
 /config/token.json
 /config/*.json
 .env
+
+# Dados gerados (output da API)
 /data/*.json
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Logs
+*.log
