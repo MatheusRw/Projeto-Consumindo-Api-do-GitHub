@@ -7,7 +7,7 @@
 .env
 
 # Dados gerados (output da API)
-/data/*.json
+#/data/*.json
 
 # Cache Python
 __pycache__/
